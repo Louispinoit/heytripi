@@ -1,0 +1,45 @@
+ Anthropic (Claude API)
+
+ Créer compte sur console.anthropic.com
+ Ajouter carte de crédit
+ Générer API key
+ Set spending limit ($50/mois pour commencer)
+
+
+ Amadeus (Vols + Hôtels)
+
+ Créer compte sur developers.amadeus.com
+ Créer une "App" dans le dashboard
+ Récupérer API Key + API Secret
+ Tester en environnement "Test"
+ Demander accès "Production" (1-2 jours)
+
+
+ Booking.com (Hôtels)
+
+ S'inscrire sur booking.com/affiliate
+ Remplir le formulaire (site web requis, même landing page)
+ Attendre approbation (1-2 semaines)
+ Récupérer Affiliate ID + API Token
+
+
+ GetYourGuide (Activités)
+
+ S'inscrire sur partner.getyourguide.com
+ Choisir "Affiliate Partner"
+ Attendre approbation
+ Demander accès API (optionnel, liens suffisent au début)
+
+
+ Google Cloud (Places API)
+
+ Créer projet sur console.cloud.google.com
+ Activer "Places API"
+ Créer API Key
+ Configurer restrictions (domaines, quotas)
+
+Acheter heytripi.com sur Namecheap/Gandi
+Réserver @heytripi sur Twitter, Instagram, TikTok
+Trouver un illustrateur (Fiverr, Dribbble, 99designs)
+Valider la mascotte avec quelques personnes
+Intégrer dans le code (logo, favicon, meta tags)
