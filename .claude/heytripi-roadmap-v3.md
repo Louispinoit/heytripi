@@ -1,4 +1,4 @@
-# 🗺️ HeyTripi - Roadmap Technique Complète v2
+# 🗺️ HeyTripy - Roadmap Technique Complète v2
 
 > **Mise à jour** : Janvier 2026
 > 
@@ -12,12 +12,12 @@
 
 | Fonctionnalité | Statut | Plan |
 |----------------|--------|------|
-| 💬 Chat avec Tripi + Map interactive | ✅ Core | Gratuit |
+| 💬 Chat avec Tripy + Map interactive | ✅ Core | Gratuit |
 | 📱 Application mobile + notifications | ✅ Excellent | Premium |
 | 👥 Partage voyage + vote activités | ✅ Différenciateur | Premium |
 | 📴 Mode hors-ligne | ✅ Essentiel | Premium |
 | 📔 Journal de bord + génération auto | ✅ Très cool | Premium |
-| 💡 Tips Tripi (SIM, devise, coûts...) | ✅ Valeur ajoutée | Gratuit (basique) / Premium (complet) |
+| 💡 Tips Tripy (SIM, devise, coûts...) | ✅ Valeur ajoutée | Gratuit (basique) / Premium (complet) |
 | ✅ To-do list / Checklist départ | ✅ Pratique | Gratuit |
 | 👨‍👩‍👧 Proches suivent le voyage | ✅ Social/Sécurité | Premium |
 | 💰 Gestion budget | ✅ Indispensable | Gratuit (basique) / Premium (complet) |
@@ -37,18 +37,18 @@
 
 ### 🔥 Les MUST-HAVE (MVP)
 
-1. **Chat Tripi + Map** - C'est le cœur du produit
+1. **Chat Tripy + Map** - C'est le cœur du produit
 2. **To-do list départ** - Simple à implémenter, très utile
 3. **Budget basique** - Suivi des dépenses prévues vs réelles
-4. **Tips Tripi basiques** - Infos pays (devise, prise électrique, visa...)
+4. **Tips Tripy basiques** - Infos pays (devise, prise électrique, visa...)
 
-### ⭐ Les DIFFÉRENCIATEURS (V1.1 - Tripi+)
+### ⭐ Les DIFFÉRENCIATEURS (V1.1 - Tripy+)
 
 5. **Mode collaboratif + vote** - Layla.ai ne l'a pas !
 6. **Mode hors-ligne** - Critique pour les voyageurs
 7. **App mobile + notifs** - L'expérience complète
 
-### 💎 Les PREMIUM (V1.2 - Tripi Pro)
+### 💎 Les PREMIUM (V1.2 - Tripy Pro)
 
 8. **Journal de bord auto** - Wow effect
 9. **Proches suivent le voyage** - Sécurité + social
@@ -84,7 +84,7 @@
 │  └── mobile/          # Expo (React Native)                │
 │                                                             │
 │  Backend (API Routes Next.js)                               │
-│  ├── /api/chat        # Streaming chat Tripi               │
+│  ├── /api/chat        # Streaming chat Tripy               │
 │  ├── /api/trips       # CRUD voyages                       │
 │  ├── /api/collab      # Temps réel collaboratif            │
 │  └── /api/journal     # Journal de bord                    │
@@ -183,7 +183,7 @@ heytripi/
 │       │   ├── (tabs)/
 │       │   │   ├── index.tsx         # Home / Dashboard
 │       │   │   ├── trips.tsx         # Liste voyages
-│       │   │   ├── chat.tsx          # Chat Tripi
+│       │   │   ├── chat.tsx          # Chat Tripy
 │       │   │   └── profile.tsx
 │       │   ├── trip/[id]/
 │       │   │   ├── index.tsx         # Détail
@@ -213,7 +213,7 @@ heytripi/
 │   │   ├── TripCard/
 │   │   ├── BudgetChart/
 │   │   ├── ChecklistItem/
-│   │   └── TripiAvatar/              # Mascotte
+│   │   └── TripyAvatar/              # Mascotte
 │   │
 │   └── api-client/                   # Client API typé
 │       ├── trips.ts
@@ -450,7 +450,7 @@ enum ActivityCategory {
 }
 
 enum ItemStatus {
-  SUGGESTED     // Proposé par Tripi
+  SUGGESTED     // Proposé par Tripy
   ACCEPTED      // Validé par l'utilisateur
   REJECTED      // Refusé
   BOOKED        // Réservé
@@ -727,7 +727,7 @@ enum NotificationType {
 
 ```
 Phase 1 (Sem 1-3)    : Setup + Landing + Auth
-Phase 2 (Sem 4-6)    : Chat Tripi + Map (CORE)
+Phase 2 (Sem 4-6)    : Chat Tripy + Map (CORE)
 Phase 3 (Sem 7-8)    : Dashboard + Checklist + Budget basique
 Phase 4 (Sem 9-10)   : App Mobile (Expo)
 Phase 5 (Sem 11-12)  : Mode Collab + Votes (Premium)
@@ -770,7 +770,7 @@ Semaine 2 : Backend + Auth
 └── [ ] API routes de base (/api/user, /api/health)
 
 Semaine 3 : Landing Page
-├── [ ] Design landing page (Tripi hero)
+├── [ ] Design landing page (Tripy hero)
 ├── [ ] Section features
 ├── [ ] Section pricing
 ├── [ ] Section FAQ
@@ -788,7 +788,7 @@ Semaine 3 : Landing Page
 
 ---
 
-### 💬 Phase 2 : Chat Tripi + Map (Semaines 4-6)
+### 💬 Phase 2 : Chat Tripy + Map (Semaines 4-6)
 
 #### Objectif
 Le cœur de l'application : conversation IA + visualisation carte
@@ -800,14 +800,14 @@ Semaine 4 : Chat Interface
 ├── [ ] Composant ChatContainer
 ├── [ ] Composant MessageBubble (user/assistant)
 ├── [ ] Composant ChatInput
-├── [ ] Composant TripiAvatar (expressions)
+├── [ ] Composant TripyAvatar (expressions)
 ├── [ ] Suggestions de démarrage
 ├── [ ] Streaming response (Vercel AI SDK)
 └── [ ] Persistence messages (DB)
 
 Semaine 5 : IA + Tools
 ├── [ ] Setup Claude API
-├── [ ] System prompt Tripi (FR/EN)
+├── [ ] System prompt Tripy (FR/EN)
 ├── [ ] Tool: searchFlights (Amadeus)
 ├── [ ] Tool: searchHotels (Amadeus)
 ├── [ ] Tool: searchActivities (Google Places)
@@ -826,7 +826,7 @@ Semaine 6 : Map Interactive
 └── [ ] Filtres (par jour, par type)
 ```
 
-#### Tools Tripi (Claude)
+#### Tools Tripy (Claude)
 
 ```typescript
 const tools = {
@@ -902,7 +902,7 @@ const tools = {
 ```
 
 #### Livrables
-- ✅ Chat fonctionnel avec Tripi
+- ✅ Chat fonctionnel avec Tripy
 - ✅ Recherche vols/hôtels/activités
 - ✅ Map interactive synchronisée
 - ✅ Tips pays automatiques
@@ -956,7 +956,7 @@ Semaine 9 : Setup Mobile
 └── [ ] Deep linking
 
 Semaine 10 : Fonctionnalités Mobile
-├── [ ] Écran chat Tripi
+├── [ ] Écran chat Tripy
 ├── [ ] Écran map (React Native Maps)
 ├── [ ] Écran trip detail
 ├── [ ] Écran checklist
@@ -1033,7 +1033,7 @@ Semaine 14 : Notifications Push
 #### Livrables
 - ✅ Voyage accessible sans internet
 - ✅ Notifications push intelligentes
-- ✅ Tips Tripi proactifs
+- ✅ Tips Tripy proactifs
 
 ---
 
@@ -1109,19 +1109,19 @@ Semaine 18 : Launch
 | Fonctionnalité | Limite |
 |----------------|--------|
 | Voyages | 2/mois |
-| Chat Tripi | 30 messages/voyage |
+| Chat Tripy | 30 messages/voyage |
 | Map interactive | ✅ |
 | Checklist | Templates de base |
 | Budget | Suivi basique |
 | Tips pays | Infos essentielles |
 | Collaborateurs | 1 |
 
-### Plan Tripi+ (5.99€/mois)
+### Plan Tripy+ (5.99€/mois)
 
 | Fonctionnalité | Inclus |
 |----------------|--------|
 | Voyages | Illimités |
-| Chat Tripi | Illimité |
+| Chat Tripy | Illimité |
 | Prix temps réel | ✅ |
 | Mode offline | ✅ |
 | Notifications | ✅ |
@@ -1131,11 +1131,11 @@ Semaine 18 : Launch
 | Alertes prix | 1 voyage |
 | Sync calendrier | ✅ |
 
-### Plan Tripi Pro (9.99€/mois)
+### Plan Tripy Pro (9.99€/mois)
 
 | Fonctionnalité | Inclus |
 |----------------|--------|
-| Tout Tripi+ | ✅ |
+| Tout Tripy+ | ✅ |
 | Journal de bord | ✅ |
 | Génération souvenirs | ✅ |
 | Partage proches | ✅ |
@@ -1229,4 +1229,4 @@ pnpm test:e2e         # Tests E2E
 
 ---
 
-*Roadmap HeyTripi v2 - Janvier 2026*
+*Roadmap HeyTripy v2 - Janvier 2026*

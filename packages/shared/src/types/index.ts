@@ -1,3 +1,3 @@
-// Types principaux HeyTripi
+// Types principaux HeyTripy
 export * from './trip';
 export * from './user';

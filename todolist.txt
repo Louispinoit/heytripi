@@ -35,7 +35,7 @@
 
  Créer projet sur console.cloud.google.com
  Activer "Places API"
- Créer API Key
+ Créer API Key = AIzaSyCvO7Pt_9eFi5DsyblLAorvnRiylL0dDsU
  Configurer restrictions (domaines, quotas)
 
 Acheter heytripi.com sur Namecheap/Gandi
@@ -43,3 +43,111 @@ Réserver @heytripi sur Twitter, Instagram, TikTok
 Trouver un illustrateur (Fiverr, Dribbble, 99designs)
 Valider la mascotte avec quelques personnes
 Intégrer dans le code (logo, favicon, meta tags)
+
+  2. Configurer Google OAuth (optionnel pour l'instant)
+
+  Si tu veux activer Google login :
+
+  1. Va sur https://supabase.com/dashboard/project/rqmqebzsaqvwhapcjymd/auth/providers
+  2. Active Google Provider
+  3. Suit les instructions pour créer un projet Google Cloud
+  4. Configure les URLs de callback
+
+
+
+  
+  🎯 Prochaines étapes immédiates
+
+  1. Valider le setup actuel (30 min)
+
+  # Vérifier que tout fonctionne
+  pnpm install
+  pnpm dev
+
+  Tester que:
+  - Web démarre sur localhost:3000
+  - Mobile démarre (Expo)
+  - Pas d'erreurs TypeScript
+
+  2. Réserver les actifs essentiels (1h)
+
+  - Acheter heytripi.com (15€/an sur Namecheap/Gandi)
+  - Réserver @heytripi sur Twitter, Instagram, TikTok
+  - Créer un compte GitHub pour le repo (si pas déjà fait)
+
+  3. Setup Supabase (2h)
+
+  - Créer un projet sur supabase.com
+  - Copier les credentials
+  - Créer .env.local dans apps/web/
+  - Setup Auth (Email + Google OAuth)
+  - Tester la connexion
+
+  4. Landing Page Simple (1 journée)
+
+  Créer une landing page minimaliste pour:
+  - Présenter HeyTripy
+  - Collecter des emails (waitlist)
+  - Montrer la mascotte Tripy (placeholder pour l'instant)
+
+  5. Contacter le designer (parallèle)
+
+  Pendant que tu codes, brief ton ami pour:
+  - Logo + Mascotte Tripy
+  - Budget: 600-800€
+  - Délai: 2-3 semaines
+
+  ---
+  📋 Ordre de priorité selon la roadmap
+
+  Phase 1A : Fondations (Cette semaine)
+
+  1. ✅ Monorepo setup (déjà fait)
+  2. 🔨 Environment variables + .env.example
+  3. 🔨 Supabase setup + Auth
+  4. 🔨 Landing page basique
+
+  Phase 1B : Core Feature (Semaine 2-4)
+
+  5. Chat avec Tripy (Claude API)
+  6. Système de conversations
+  7. Tool calling basique (recherche vols/hôtels)
+
+  Phase 1C : MVP (Semaine 5-6)
+
+  8. Map interactive
+  9. Dashboard voyages
+  10. Export PDF
+
+  ---
+  💡 Ma recommandation : Par quoi commencer MAINTENANT
+
+  Option A - Quick Win (si tu veux voir du résultat vite):
+  # Créer une landing page simple avec waitlist
+  1. Designer la homepage avec Tripy placeholder
+  2. Formulaire email (Resend ou Loops.so)
+  3. Deploy sur Vercel
+  4. Partager pour tester l'intérêt
+
+  Option B - Fondations solides (recommandé):
+  1. Setup Supabase + Auth complète
+  2. Créer le schéma DB (Prisma)
+  3. API routes de base (/api/auth, /api/trips)
+  4. Tester l'authentification
+  → Base solide pour construire le reste
+
+  Option C - Prototype IA (si tu veux tester le core):
+  1. Créer compte Anthropic (Claude API)
+  2. Implémenter le chat basique
+  3. Tester les tool calls
+  4. Valider que l'IA fonctionne bien
+  → Valide le concept avant d'investir plus
+
+  ---
+  🤔 Quelle option tu préfères ?
+
+  - A = Landing page pour valider l'intérêt du marché
+  - B = Backend solide pour construire sur du rock
+  - C = Prototype IA pour valider que le concept fonctionne
+
+  Ou je peux te faire un mix des 3 ? 😊

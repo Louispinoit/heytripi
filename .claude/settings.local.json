@@ -1,7 +1,27 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(timeout /t 5)",
+      "Bash(test:*)",
+      "WebSearch",
+      "Bash(claude mcp add chrome-devtools --scope user -- npx chrome-devtools-mcp@latest)",
+      "Bash(claude mcp list:*)",
+      "Bash(claude mcp)",
+      "Bash(claude --version:*)",
+      "Bash(claude mcp get:*)",
+      "Bash(claude mcp add chrome-devtools -s user npx chrome-devtools-mcp@latest)",
+      "WebFetch(domain:github.com)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__resize_page",
+      "mcp__chrome-devtools__evaluate_script",
+      "WebFetch(domain:mapcn.vercel.app)",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__chrome-devtools__get_console_message"
     ]
   }
 }

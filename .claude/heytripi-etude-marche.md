@@ -1,4 +1,4 @@
-# 📊 HeyTripi - Étude de Marché Complète
+# 📊 HeyTripy - Étude de Marché Complète
 
 > Document stratégique : Marché, Pricing, Coûts Design
 > 
@@ -95,7 +95,7 @@ SAM (Serviceable Addressable Market) = Marché qu'on peut servir
 SOM (Serviceable Obtainable Market) = Marché qu'on peut capturer réalistiquement
 ```
 
-### 3.2 Calcul pour HeyTripi
+### 3.2 Calcul pour HeyTripy
 
 #### TAM - Marché mondial des apps de planification voyage
 ```
@@ -125,7 +125,7 @@ Hypothèse Y3 : 0.05% du marché
 | Utilisent apps de voyage | ~25M (63%) |
 | Prêts à payer pour premium | ~5M (20%) |
 
-**Objectif HeyTripi :**
+**Objectif HeyTripy :**
 
 | Année | Utilisateurs gratuits | Abonnés payants | Revenus estimés |
 |-------|----------------------|-----------------|-----------------|
@@ -147,7 +147,7 @@ Hypothèse Y3 : 0.05% du marché
 | **Sygic Travel** | $14.99/an | 5M+ | Offline, guides | Pas d'IA |
 | **Google Travel** | Gratuit | ? | Intégré Gmail | Basique, pas de planning |
 
-### 4.2 Positionnement HeyTripi
+### 4.2 Positionnement HeyTripy
 
 ```
                     PRIX
@@ -157,7 +157,7 @@ Hypothèse Y3 : 0.05% du marché
                      │
     ─────────────────┼─────────────────→ FONCTIONNALITÉS
                      │
-      HeyTripi ⭐    │    Wanderlog
+      HeyTripy ⭐    │    Wanderlog
       (€70/an)       │    ($45/an)
                      │
          Gratuit     │    Google Travel
@@ -172,7 +172,7 @@ Hypothèse Y3 : 0.05% du marché
 
 ### 5.1 Les 3 Plans
 
-#### 🆓 GRATUIT - "Tripi Découverte"
+#### 🆓 GRATUIT - "Tripy Découverte"
 ```
 Prix : 0€
 
@@ -182,7 +182,7 @@ Prix : 0€
 - Carte interactive basique
 - 1 collaborateur max
 - Suggestions vols/hôtels (sans prix temps réel)
-- Watermark "Powered by HeyTripi" sur exports
+- Watermark "Powered by HeyTripy" sur exports
 
 ❌ Non inclus :
 - Mode offline
@@ -214,7 +214,7 @@ Cible : Voyageurs réguliers (3-5 voyages/an)
 ```
 Prix : 9.99€/mois ou 99€/an (2 mois offerts)
 
-✅ Tout Tripi+ PLUS :
+✅ Tout Tripy+ PLUS :
 - 10 collaborateurs par voyage
 - Alertes prix illimitées
 - Compagnon pendant le voyage (notifs, météo, rappels)
@@ -229,7 +229,7 @@ Cible : Passionnés de voyage (6+ voyages/an), créateurs de contenu
 
 ### 5.2 Tableau comparatif
 
-| Fonctionnalité | Gratuit | Tripi+ (5.99€) | Tripi Pro (9.99€) |
+| Fonctionnalité | Gratuit | Tripy+ (5.99€) | Tripy Pro (9.99€) |
 |----------------|---------|----------------|-------------------|
 | Voyages/mois | 2 | ∞ | ∞ |
 | Messages IA | 20/voyage | ∞ | ∞ |
@@ -246,11 +246,11 @@ Cible : Passionnés de voyage (6+ voyages/an), créateurs de contenu
 
 ### 5.3 Comparaison avec la concurrence
 
-| App | Prix/an | HeyTripi équivalent |
+| App | Prix/an | HeyTripy équivalent |
 |-----|---------|---------------------|
-| Layla.ai | $49 (~46€) | Tripi+ à 59€ → légèrement plus cher mais + de valeur |
-| TripIt Pro | $49 (~46€) | Tripi+ à 59€ |
-| Wanderlog Pro | $45 (~42€) | Tripi+ à 59€ |
+| Layla.ai | $49 (~46€) | Tripy+ à 59€ → légèrement plus cher mais + de valeur |
+| TripIt Pro | $49 (~46€) | Tripy+ à 59€ |
+| Wanderlog Pro | $45 (~42€) | Tripy+ à 59€ |
 
 **Justification du prix** :
 - IA Claude (meilleure que GPT pour le raisonnement)
@@ -268,15 +268,15 @@ Acquisition (gratuit)
     │
     ▼ Après 2 voyages planifiés
     │
-    ├─── "Tu as atteint ta limite ! Passe à Tripi+ pour continuer"
+    ├─── "Tu as atteint ta limite ! Passe à Tripy+ pour continuer"
     │
-    ▼ Essai gratuit 7 jours Tripi+
+    ▼ Essai gratuit 7 jours Tripy+
     │
     ├─── 60% continuent en payant (objectif)
     │
-    ▼ Après 6 mois Tripi+
+    ▼ Après 6 mois Tripy+
     │
-    └─── Upsell Tripi Pro : "Débloquez le compagnon de voyage !"
+    └─── Upsell Tripy Pro : "Débloquez le compagnon de voyage !"
 ```
 
 ### 5.5 Revenus additionnels (Affiliations)
@@ -290,7 +290,7 @@ Acquisition (gratuit)
 
 **Revenu mixte par utilisateur actif :**
 ```
-Abonnement moyen : ~70€/an (mix Tripi+/Pro)
+Abonnement moyen : ~70€/an (mix Tripy+/Pro)
 Affiliations : ~15€/an (si 3 voyages)
 ─────────────────────────────────
 Total ARPU : ~85€/an
@@ -304,8 +304,8 @@ Total ARPU : ~85€/an
 
 | Livrable | Description |
 |----------|-------------|
-| **Logo** | Wordmark "HeyTripi" + icône Tripi |
-| **Mascotte Tripi** | Character design complet |
+| **Logo** | Wordmark "HeyTripy" + icône Tripy |
+| **Mascotte Tripy** | Character design complet |
 | **Expressions** | 8-10 expressions (content, triste, etc.) |
 | **Déclinaisons** | Favicon, app icon, social media |
 | **Brand Guidelines** | Document de référence couleurs/typo |
@@ -337,7 +337,7 @@ Prix ami suggéré : 250-400€
 #### Option B : Pack Standard ⭐ RECOMMANDÉ
 ```
 Logo complet (wordmark + icône + variations)
-+ Mascotte Tripi complète
++ Mascotte Tripy complète
 + 8 expressions
 + Favicon + App icons
 + Social media kit basique
@@ -384,7 +384,7 @@ Exemple :
 **Ce que tu peux proposer en échange :**
 - Mention "Design by [Nom]" dans l'app et sur le site
 - Témoignage/recommandation LinkedIn
-- Abonnement Tripi Pro gratuit à vie
+- Abonnement Tripy Pro gratuit à vie
 - Participation aux revenus si le projet décolle (1-2% ?)
 - Paiement en plusieurs fois
 
@@ -461,7 +461,7 @@ Marge Y1 : 3,000€ - 2,500€ = +500€ 😊
 - [ ] Acheter heytripi.com
 - [ ] Réserver @heytripi sur les réseaux
 - [ ] Contacter ton ami designer
-- [ ] Briefer sur Tripi (envoyer ce document)
+- [ ] Briefer sur Tripy (envoyer ce document)
 
 ### Court terme (1-4 semaines)
 - [ ] Valider le design mascotte
@@ -492,8 +492,8 @@ Marge Y1 : 3,000€ - 2,500€ = +500€ 😊
 
 ### Le pricing
 - **Gratuit** : Acquisition, 2 voyages/mois
-- **Tripi+** : 5.99€/mois - L'essentiel
-- **Tripi Pro** : 9.99€/mois - Complet
+- **Tripy+** : 5.99€/mois - L'essentiel
+- **Tripy Pro** : 9.99€/mois - Complet
 
 ### Le design
 - **Budget ami** : 600-800€ pour pack complet
@@ -505,4 +505,4 @@ Marge Y1 : 3,000€ - 2,500€ = +500€ 😊
 
 ---
 
-*Document créé le 16/01/2026 - HeyTripi Étude de Marché v1.0*
+*Document créé le 16/01/2026 - HeyTripy Étude de Marché v1.0*

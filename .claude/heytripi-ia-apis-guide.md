@@ -1,4 +1,4 @@
-# 🤖 HeyTripi - Guide IA & APIs de Données
+# 🤖 HeyTripy - Guide IA & APIs de Données
 
 > Janvier 2026 - Tout ce que tu dois savoir sur les coûts et accès
 
@@ -29,7 +29,7 @@
 5. **Français natif** - Comprend et parle français parfaitement
 6. **Vercel AI SDK** - Intégration native avec Next.js
 
-### 💰 Estimation des coûts IA pour HeyTripi
+### 💰 Estimation des coûts IA pour HeyTripy
 
 #### Hypothèses de calcul
 
@@ -38,7 +38,7 @@ Conversation moyenne = 10 échanges
 Tokens par échange :
   - Input user : ~200 tokens
   - System prompt : ~1,000 tokens (une fois)
-  - Output Tripi : ~500 tokens
+  - Output Tripy : ~500 tokens
   - Tool calls/results : ~300 tokens
 
 Total par conversation : ~8,000 tokens input + ~5,000 tokens output
@@ -225,7 +225,7 @@ const response = await fetch('https://demandapi.booking.com/3.1/accommodations/s
 **Alternatives pour afficher des Airbnb**
 
 1. **Ne pas les inclure** - Focus sur hôtels (Booking.com)
-2. **Liens manuels** - Tripi suggère "Cherchez aussi sur Airbnb" avec lien générique
+2. **Liens manuels** - Tripy suggère "Cherchez aussi sur Airbnb" avec lien générique
 3. **Scraping** - ❌ Interdit par les ToS, risque de ban
 
 **Ma recommandation** : Ne pas inclure Airbnb pour le MVP. Concentre-toi sur Booking.com qui couvre 95% des besoins.

@@ -1,4 +1,4 @@
-# 🎨 HeyTripi - Brand Guidelines
+# 🎨 HeyTripy - Brand Guidelines
 
 > **heytripi.com** - Ton compagnon de voyage IA
 
@@ -8,14 +8,14 @@
 
 | Élément | Choix |
 |---------|-------|
-| **Nom** | HeyTripi |
+| **Nom** | HeyTripy |
 | **Domaine** | heytripi.com |
 | **Prononciation** | /heɪ ˈtrɪpi/ (hey-tri-pi) |
-| **Mascotte** | Tripi (à définir) |
+| **Mascotte** | Tripy (à définir) |
 
 ---
 
-## 🎯 Pourquoi HeyTripi fonctionne
+## 🎯 Pourquoi HeyTripy fonctionne
 
 ### Analyse du nom
 
@@ -26,7 +26,7 @@
 | Prononçable | ⭐⭐⭐⭐⭐ | Identique en FR, EN, ES, DE... |
 | Friendly | ⭐⭐⭐⭐⭐ | "Hey" = accueil chaleureux |
 | Tech/Moderne | ⭐⭐⭐⭐ | Format "Hey[X]" très startup |
-| Mascotte-ready | ⭐⭐⭐⭐⭐ | "Tripi" = personnage naturel |
+| Mascotte-ready | ⭐⭐⭐⭐⭐ | "Tripy" = personnage naturel |
 
 ### Le format "Hey[X]"
 - **HeyGen** - Génération vidéo IA
@@ -35,19 +35,19 @@
 - → Format reconnu, moderne, conversationnel
 
 ### Parfait pour un assistant IA
-- "Hey Tripi, organise mon voyage à Barcelone"
-- "Demande à Tripi"
-- "Tripi te suggère..."
+- "Hey Tripy, organise mon voyage à Barcelone"
+- "Demande à Tripy"
+- "Tripy te suggère..."
 - Naturel dans une conversation
 
 ---
 
-## 🐾 Mascotte : Tripi
+## 🐾 Mascotte : Tripy
 
 ### Concept recommandé : Petite valise à roulettes animée
 
 ```
-Nom         : Tripi
+Nom         : Tripy
 Type        : Valise de voyage cartoon
 Personnalité: Joyeux, serviable, organisé, enthousiaste
 Style       : Flat design moderne, formes rondes, grands yeux
@@ -71,7 +71,7 @@ Poignée     : Télescopique = peut servir de "bras" levé
 Accessoires : Stickers de voyage, étiquette de bagage
 ```
 
-### Expressions de Tripi
+### Expressions de Tripy
 
 | État | Expression | Usage |
 |------|------------|-------|
@@ -87,7 +87,7 @@ Accessoires : Stickers de voyage, étiquette de bagage
 | Format | Usage | Détail |
 |--------|-------|--------|
 | **Icône app** | Favicon, app icon | Juste la valise, simplifié |
-| **Avatar chat** | Bulle de conversation | Tête de Tripi + expression |
+| **Avatar chat** | Bulle de conversation | Tête de Tripy + expression |
 | **Illustration** | Marketing, landing | Corps entier + contexte |
 | **Animation** | Loading, transitions | Roulettes qui tournent |
 | **Emoji pack** | Réactions in-app | 8-12 expressions |
@@ -100,7 +100,7 @@ Accessoires : Stickers de voyage, étiquette de bagage
 
 | Nom | Hex | Usage |
 |-----|-----|-------|
-| **Tripi Teal** | `#14B8A6` | Couleur principale, mascotte |
+| **Tripy Teal** | `#14B8A6` | Couleur principale, mascotte |
 | **Sunset Orange** | `#F97316` | Accent, CTA, énergie |
 | **Sky Blue** | `#0EA5E9` | Secondaire, ciel, voyage |
 | **Cloud White** | `#F8FAFC` | Fond clair |
@@ -110,7 +110,7 @@ Accessoires : Stickers de voyage, étiquette de bagage
 
 ```css
 :root {
-  /* Primary - Tripi Teal */
+  /* Primary - Tripy Teal */
   --tripi-50: #F0FDFA;
   --tripi-100: #CCFBF1;
   --tripi-200: #99F6E4;
@@ -240,8 +240,8 @@ body { font-size: 1rem; font-weight: 400; } /* 16px */
 ### Concept
 
 Le logo combine :
-1. **Wordmark** : "HeyTripi" en Plus Jakarta Sans Bold
-2. **Icône** : Tripi la valise (simplifiée)
+1. **Wordmark** : "HeyTripy" en Plus Jakarta Sans Bold
+2. **Icône** : Tripy la valise (simplifiée)
 
 ### Versions
 
@@ -259,7 +259,7 @@ Le logo combine :
 │                                  │
 │   [X]  ┌─────────────────────┐   │
 │        │                     │   │
-│   [X]  │   🧳 HeyTripi       │   │
+│   [X]  │   🧳 HeyTripy       │   │
 │        │                     │   │
 │   [X]  └─────────────────────┘   │
 │                                  │
@@ -312,8 +312,8 @@ X = hauteur du "H" = espace minimum autour du logo
 | YouTube | @heytripi | ❓ À vérifier |
 
 ### Photo de profil
-- Utiliser l'icône Tripi (mascotte seule)
-- Fond Tripi Teal (#14B8A6)
+- Utiliser l'icône Tripy (mascotte seule)
+- Fond Tripy Teal (#14B8A6)
 - Format carré, centré
 
 ### Bannière
@@ -325,20 +325,20 @@ X = hauteur du "H" = espace minimum autour du logo
 ## 📋 Checklist branding
 
 ### Immédiat
-- [x] Nom choisi : HeyTripi
+- [x] Nom choisi : HeyTripy
 - [x] Domaine : heytripi.com
 - [ ] Acheter le domaine
 - [ ] Réserver les handles sociaux
 - [ ] Brief mascotte au designer
 
 ### Court terme
-- [ ] Design mascotte Tripi (illustrateur)
+- [ ] Design mascotte Tripy (illustrateur)
 - [ ] Logo wordmark + icône
 - [ ] Favicon et app icons
 - [ ] Kit réseaux sociaux
 
 ### Moyen terme
-- [ ] Pack d'expressions Tripi (8-12)
+- [ ] Pack d'expressions Tripy (8-12)
 - [ ] Animations loading
 - [ ] Guide de style complet
 - [ ] Templates marketing
@@ -348,10 +348,10 @@ X = hauteur du "H" = espace minimum autour du logo
 ## 🎨 Brief pour designer/illustrateur
 
 ```
-PROJET : Mascotte HeyTripi
+PROJET : Mascotte HeyTripy
 
-CLIENT : HeyTripi - Assistant voyage IA
-NOM MASCOTTE : Tripi
+CLIENT : HeyTripy - Assistant voyage IA
+NOM MASCOTTE : Tripy
 
 CONCEPT :
 Petite valise de voyage à roulettes, animée et expressive.
@@ -397,4 +397,4 @@ BUDGET : [À définir]
 
 ---
 
-*Document créé le 16/01/2026 - HeyTripi Brand Guidelines v1.0*
+*Document créé le 16/01/2026 - HeyTripy Brand Guidelines v1.0*

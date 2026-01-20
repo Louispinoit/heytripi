@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**HeyTripi** is an AI-powered travel planning platform with a virtual assistant named "Tripi". The project is a Turborepo monorepo targeting web (Next.js 16) and mobile (Expo/React Native) with shared packages.
+**HeyTripy** is an AI-powered travel planning platform with a virtual assistant named "Tripy". The project is a Turborepo monorepo targeting web (Next.js 16) and mobile (Expo/React Native) with shared packages.
 
 - **Target**: French-speaking travelers (FR, BE, CH, CA-FR)
 - **Core Feature**: Conversational AI assistant for trip planning with interactive maps
-- **Monetization**: Freemium model (Free / Tripi+ 5.99€/mo / Tripi Pro 9.99€/mo) + affiliate commissions
+- **Monetization**: Freemium model (Free / Tripy+ 5.99€/mo / Tripy Pro 9.99€/mo) + affiliate commissions
 
 ## Commands
 
@@ -78,11 +78,26 @@ Core types in `packages/shared/src/types/trip.ts`:
 | Layer | Technology |
 |-------|------------|
 | Web | Next.js 16 + React 19 + Tailwind CSS 4 |
+| UI Components | **shadcn/ui** (style: new-york) |
 | Mobile | Expo 54 + React Native 0.81 + Expo Router |
-| Monorepo | Turborepo 2.7 + pnpm 9 |
+| Monorepo | Turborepo 2.7 + **pnpm 9** |
 | Data | TanStack React Query + Zod validation |
 | Backend (planned) | Next.js API Routes + Supabase (PostgreSQL + Auth + Realtime) |
 | AI | Claude Sonnet 4 via Vercel AI SDK |
+
+### UI Components (shadcn/ui)
+
+**IMPORTANT**: Always use pnpm for package management.
+
+```bash
+# Add shadcn components (from apps/web/)
+pnpm dlx shadcn@latest add button
+pnpm dlx shadcn@latest add card
+pnpm dlx shadcn@latest add input
+# etc.
+```
+
+Components are installed in `apps/web/components/ui/`. Use Context7 MCP to get latest shadcn documentation when needed.
 
 ### External APIs
 
@@ -188,7 +203,7 @@ UPSTASH_REDIS_TOKEN=
 - Lazy load components and routes
 - Optimize images and assets
 
-## Tripi AI Integration
+## Tripy AI Integration
 
 ### Claude Tool Calling Pattern
 
@@ -225,7 +240,7 @@ const travelTools = {
 
 ### Colors (Tailwind)
 ```css
---tripi-500: #14B8A6;  /* Primary - Tripi Teal */
+--tripi-500: #14B8A6;  /* Primary - Tripy Teal */
 --sunset-500: #F97316; /* Accent - CTA */
 --sky-500: #0EA5E9;    /* Secondary - Sky Blue */
 --cloud: #F8FAFC;      /* Light background */
