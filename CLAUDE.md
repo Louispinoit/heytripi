@@ -10,6 +10,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Core Feature**: Conversational AI assistant for trip planning with interactive maps
 - **Monetization**: Freemium model (Free / Tripy+ 5.99€/mo / Tripy Pro 9.99€/mo) + affiliate commissions
 
+## Important Documentation
+
+**CRITICAL**: Always consult project documentation in `.claude/` directory for context:
+
+- **`.claude/heytripi-roadmap-v3.md`** - Product vision, UX principles, technical roadmap, database schema, phases planning
+- **`.claude/heytripi-etude-marche.md`** - Market research, competitors analysis, positioning strategy
+
+These documents contain essential information about product vision, UX principles (conversation-first, export integrations), feature priorities, and technical architecture. **Read them before making major decisions.**
+
 ## Commands
 
 ```bash
@@ -202,6 +211,115 @@ UPSTASH_REDIS_TOKEN=
 - Use Turborepo caching for builds
 - Lazy load components and routes
 - Optimize images and assets
+
+## Code Structure & File Organization
+
+### File Naming Conventions
+- **kebab-case** for all files: `demo-preview.tsx`, `feature-card.tsx`
+- **SCREAMING_SNAKE_CASE** for constants: `FEATURES`, `PRICING_PLANS`
+- **PascalCase** for components/types: `DemoPreview`, `FeatureCard`
+- **camelCase** for functions/variables: `fetchRouteSegment`, `visiblePlaces`
+
+### Component Organization
+
+**Simple components** (single file):
+```
+components/landing/feature-card.tsx
+```
+
+**Complex components** (folder with multiple files):
+```
+components/landing/demo-preview/
+├── index.tsx          # Main component + sub-components
+├── types.ts           # TypeScript interfaces
+├── data.ts            # Constants, mock data
+├── animated-route.tsx # Child component
+└── typing-dots.tsx    # Child component
+```
+
+### Barrel Exports
+Always create `index.ts` for folders with multiple exports:
+```typescript
+// components/landing/index.ts
+export { AnimatedSection, AnimatedText } from "./animated-section";
+export { FEATURES, PRICING_PLANS } from "./data";
+export { DemoPreview } from "./demo-preview";
+export { FeatureCard } from "./feature-card";
+```
+
+### Data Separation
+**ALWAYS** separate data from components:
+
+```typescript
+// data.ts - Constants and static data
+export const FEATURES = [
+  { icon: Plane, title: "...", description: "..." },
+  // ...
+];
+
+// component.tsx - Only structure and logic
+import { FEATURES } from "./data";
+{FEATURES.map((f) => <FeatureCard {...f} />)}
+```
+
+### Page Structure
+Keep pages clean - only layout, use imported components:
+
+```typescript
+// app/page.tsx
+import { Header, HeroSection, FeaturesSection } from "@/components/landing";
+
+export default function Home() {
+  return (
+    <div>
+      <Header />
+      <HeroSection />
+      <FeaturesSection />
+    </div>
+  );
+}
+```
+
+Section components can stay in the page file if they're page-specific, but data must be extracted.
+
+### Web App Structure
+```
+apps/web/
+├── app/                      # Next.js App Router
+│   ├── page.tsx              # Landing page (< 300 lines)
+│   ├── layout.tsx            # Root layout
+│   ├── auth/                 # Auth routes
+│   │   ├── login/page.tsx
+│   │   └── callback/route.ts
+│   ├── dashboard/            # Protected routes
+│   │   └── page.tsx
+│   └── api/                  # API routes
+│       └── trips/route.ts
+├── components/
+│   ├── ui/                   # shadcn/ui components (auto-generated)
+│   ├── landing/              # Landing page components
+│   │   ├── index.ts          # Barrel exports
+│   │   ├── data.ts           # Static data
+│   │   ├── feature-card.tsx
+│   │   └── demo-preview/     # Complex component folder
+│   ├── chat/                 # Chat components (future)
+│   └── dashboard/            # Dashboard components (future)
+├── lib/
+│   ├── utils.ts              # Utility functions
+│   └── supabase/             # Supabase client config
+│       ├── client.ts
+│       ├── server.ts
+│       └── middleware.ts
+└── middleware.ts             # Next.js middleware
+```
+
+### Rules
+1. **Max 300 lines per file** - Split if larger
+2. **No inline data in components** - Extract to `data.ts`
+3. **One component per file** (unless tightly coupled)
+4. **Types in separate file** for complex components
+5. **Always use barrel exports** for folders
+6. **Group by feature**, not by type
 
 ## Tripy AI Integration
 

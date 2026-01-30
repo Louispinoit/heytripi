@@ -177,7 +177,7 @@ Hypothèse Y3 : 0.05% du marché
 Prix : 0€
 
 ✅ Inclus :
-- 2 voyages par mois
+- 1 voyage par an
 - Chat IA limité (20 messages/voyage)
 - Carte interactive basique
 - 1 collaborateur max
@@ -197,7 +197,7 @@ Prix : 0€
 Prix : 5.99€/mois ou 59€/an (2 mois offerts)
 
 ✅ Tout Gratuit PLUS :
-- Voyages illimités
+- 3 voyages par an
 - Chat IA illimité
 - Prix temps réel (vols, hôtels, activités)
 - 5 collaborateurs par voyage
@@ -215,6 +215,7 @@ Cible : Voyageurs réguliers (3-5 voyages/an)
 Prix : 9.99€/mois ou 99€/an (2 mois offerts)
 
 ✅ Tout Tripy+ PLUS :
+- Voyages illimités
 - 10 collaborateurs par voyage
 - Alertes prix illimitées
 - Compagnon pendant le voyage (notifs, météo, rappels)
@@ -491,7 +492,7 @@ Marge Y1 : 3,000€ - 2,500€ = +500€ 😊
 - **Tendance** : +40% du marché en abonnement
 
 ### Le pricing
-- **Gratuit** : Acquisition, 2 voyages/mois
+- **Gratuit** : Acquisition, 2 voyages/an
 - **Tripy+** : 5.99€/mois - L'essentiel
 - **Tripy Pro** : 9.99€/mois - Complet
 

@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Luggage, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
+import { Luggage, Mail, Lock, User, Loader2, ArrowLeft, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { createClient } from "@/lib/supabase/client";
+import { signUpWithEmail } from "@/app/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,17 +20,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const authError = searchParams.get("error");
-
   const supabase = createClient();
 
   // Redirect if already logged in
@@ -45,39 +46,31 @@ export default function LoginPage() {
     checkUser();
   }, [supabase.auth, router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    if (password.length < 6) {
+      setError("Le mot de passe doit contenir au moins 6 caractères");
+      setLoading(false);
+      return;
+    }
 
-    if (error) {
-      setError(getErrorMessage(error.message));
+    const result = await signUpWithEmail(email, password, name);
+
+    if (result.error) {
+      setError(getErrorMessage(result.error));
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      setSuccess(true);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError("");
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
-      },
+    startTransition(async () => {
+      await signInWithGoogle("/dashboard");
     });
-
-    if (error) {
-      setError(getErrorMessage(error.message));
-      setLoading(false);
-    }
   };
 
   // Show loading while checking auth
@@ -85,6 +78,43 @@ export default function LoginPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (success) {
+    return (
+      <div className="relative flex min-h-screen flex-col items-center justify-center bg-background px-4">
+        {/* Background decoration */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md"
+        >
+          <Card className="border-border/50 shadow-lg">
+            <CardContent className="flex flex-col items-center py-12 text-center">
+              <div className="mb-6 flex size-16 items-center justify-center rounded-full bg-primary/10">
+                <Check className="size-8 text-primary" />
+              </div>
+              <h2 className="mb-2 text-2xl font-bold text-foreground">
+                Vérifie ta boîte mail !
+              </h2>
+              <p className="mb-6 max-w-sm text-muted-foreground">
+                On t'a envoyé un email à <strong>{email}</strong>. Clique sur le
+                lien pour activer ton compte.
+              </p>
+              <Button variant="outline" asChild>
+                <Link href="/auth/login">Retour à la connexion</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }
@@ -131,33 +161,33 @@ export default function LoginPage() {
 
         <Card className="border-border/50 shadow-lg">
           <CardHeader className="space-y-1 pb-4 pt-6 text-center">
-            <CardTitle className="text-2xl font-bold">Bon retour !</CardTitle>
+            <CardTitle className="text-2xl font-bold">Crée ton compte</CardTitle>
             <CardDescription>
-              Connecte-toi pour retrouver tes voyages
+              Rejoins des milliers de voyageurs
             </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* Error messages */}
-            {(error || authError) && (
+            {/* Error message */}
+            {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive"
               >
-                {error || decodeURIComponent(authError || "Une erreur s'est produite. Réessaie.")}
+                {error}
               </motion.div>
             )}
 
-            {/* Google OAuth */}
+            {/* Google OAuth - Using Server Action */}
             <Button
               type="button"
               variant="outline"
               className="h-11 w-full gap-3 text-base"
-              disabled={loading}
+              disabled={isPending || loading}
               onClick={handleGoogleLogin}
             >
-              {loading ? (
+              {isPending ? (
                 <Loader2 className="size-5 animate-spin" />
               ) : (
                 <GoogleIcon />
@@ -177,8 +207,25 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Email/Password form */}
-            <form onSubmit={handleLogin} className="space-y-4">
+            {/* Registration form */}
+            <form onSubmit={handleSignup} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Prénom</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Ton prénom"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="h-11 pl-10"
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
@@ -197,25 +244,18 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Oublié ?
-                  </Link>
-                </div>
+                <Label htmlFor="password">Mot de passe</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     id="password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder="6 caractères minimum"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="h-11 pl-10"
                     required
+                    minLength={6}
                     disabled={loading}
                   />
                 </div>
@@ -224,15 +264,15 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="h-11 w-full text-base"
-                disabled={loading}
+                disabled={loading || isPending}
               >
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 size-4 animate-spin" />
-                    Connexion...
+                    Création du compte...
                   </>
                 ) : (
-                  "Se connecter"
+                  "Créer mon compte"
                 )}
               </Button>
             </form>
@@ -240,19 +280,19 @@ export default function LoginPage() {
 
           <CardFooter className="justify-center pb-6">
             <p className="text-sm text-muted-foreground">
-              Pas encore de compte ?{" "}
+              Déjà un compte ?{" "}
               <Link
-                href="/auth/register"
+                href="/auth/login"
                 className="font-medium text-primary hover:underline"
               >
-                Créer un compte
+                Se connecter
               </Link>
             </p>
           </CardFooter>
         </Card>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          En continuant, tu acceptes nos{" "}
+          En créant un compte, tu acceptes nos{" "}
           <Link href="/legal/terms" className="underline hover:text-foreground">
             CGU
           </Link>{" "}
@@ -293,11 +333,14 @@ function GoogleIcon() {
 }
 
 function getErrorMessage(message: string): string {
-  if (message.includes("Invalid login credentials")) {
-    return "Email ou mot de passe incorrect";
+  if (message.includes("User already registered")) {
+    return "Cet email est déjà utilisé. Connecte-toi ou réinitialise ton mot de passe.";
   }
-  if (message.includes("Email not confirmed")) {
-    return "Vérifie ton email pour confirmer ton compte";
+  if (message.includes("Password should be at least")) {
+    return "Le mot de passe doit contenir au moins 6 caractères";
+  }
+  if (message.includes("Unable to validate email")) {
+    return "Cette adresse email n'est pas valide";
   }
   if (message.includes("Too many requests")) {
     return "Trop de tentatives. Réessaie dans quelques minutes.";

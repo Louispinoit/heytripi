@@ -21,7 +21,24 @@
       "mcp__chrome-devtools__evaluate_script",
       "WebFetch(domain:mapcn.vercel.app)",
       "mcp__chrome-devtools__list_console_messages",
-      "mcp__chrome-devtools__get_console_message"
+      "mcp__chrome-devtools__get_console_message",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(npx next dev:*)",
+      "Bash(npx next build:*)",
+      "Bash(timeout /t 5 /nobreak)",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__performance_start_trace",
+      "mcp__chrome-devtools__performance_analyze_insight",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__click",
+      "Bash(pushd \"C:\\\\projet\\\\sass\\\\heytripi\\\\apps\\\\web\")",
+      "Bash(popd)",
+      "Bash(taskkill:*)",
+      "mcp__supabase__get_publishable_keys",
+      "mcp__claude_ai_Context7__resolve-library-id",
+      "mcp__supabase__search_docs",
+      "mcp__supabase__get_logs"
     ]
   }
 }

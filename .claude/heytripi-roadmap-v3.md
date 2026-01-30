@@ -1,8 +1,172 @@
-# 🗺️ HeyTripy - Roadmap Technique Complète v2
+# 🗺️ HeyTripy - Roadmap Technique Complète v3
 
 > **Mise à jour** : Janvier 2026
-> 
+>
 > Site web + Application mobile en parallèle
+
+---
+
+## 🎨 Product Vision & UX Principles
+
+### Vision Core
+**"Planifier un voyage devrait être aussi simple qu'une conversation avec un ami"**
+
+HeyTripy n'est pas un formulaire de recherche - c'est un compagnon de voyage intelligent qui comprend tes envies et s'adapte à toi.
+
+### UX Principles (Retours Designer - Jan 2026)
+
+#### 1. 🗣️ Conversation-First, pas Forms-First
+- **Chat comme interface principale** - Tout commence et évolue par la conversation
+- **Pas de formulaires complexes** - Tripy pose des questions naturelles
+- **Progressive disclosure** - Les options apparaissent au fur et à mesure du besoin
+- **Suggestions visuelles contextuelles** - Pictos, chips, quick replies
+
+#### 2. 🎯 Onboarding Conversationnel Progressif
+
+**Problème utilisateur**: "Je ne sais pas par où commencer"
+
+**Solution**: Tripy guide avec des questions simples et visuelles
+
+```
+Exemple de flow:
+┌─────────────────────────────────────────────┐
+│ Tripy: "Salut ! C'est quoi ton prochain     │
+│         trip ? 🌍"                           │
+│                                             │
+│ [Suggestions visuelles]                     │
+│ 🏖️ Week-end détente                         │
+│ 🚗 Road trip                                │
+│ ✈️ Voyage longue distance                   │
+│ 🏔️ Aventure nature                          │
+│ 🎭 City break culture                       │
+│ 💬 Autre (champ libre)                      │
+└─────────────────────────────────────────────┘
+
+Puis après sélection "Week-end détente":
+┌─────────────────────────────────────────────┐
+│ Tripy: "Cool ! Plutôt mer ou montagne ? 🏖️" │
+│                                             │
+│ Puis suggestions de destinations:          │
+│ 📍 Barcelone (climat parfait en mars)       │
+│ 📍 Lisbonne (pas cher, bonne bouffe)        │
+│ 📍 Côte d'Azur (3h de route)                │
+│ 📍 Autres idées...                          │
+└─────────────────────────────────────────────┘
+```
+
+**Éléments visuels à intégrer:**
+- **Pictos d'activités** (Culture 🎭, Nature 🌲, Food 🍽️, Adventure 🏔️, Relax 🧘, Nightlife 🎉, Shopping 🛍️)
+- **Suggestions avant saisie** (prompt suggestions contextuelles)
+- **Quick replies** (chips cliquables pour réponses rapides)
+- **Destinations populaires** (avec météo, prix moyen, temps de trajet)
+- **Filtres dynamiques** qui s'adaptent aux réponses
+
+#### 3. 📤 Export & Intégrations - Make it actionable
+
+**Problème**: "J'ai planifié mon voyage dans Tripy, et maintenant ?"
+
+**Solutions d'export:**
+
+| Export Type | Format | Use Case |
+|-------------|--------|----------|
+| **Google Calendar** | .ics + deep link | Sync automatique avec événements + GPS |
+| **Apple Calendar** | .ics | Sync iOS/macOS |
+| **PDF Itinéraire** | PDF structuré | Impression, partage email |
+| **Citymapper Link** | Deep link API | Navigation optimisée sur place |
+| **Google Maps List** | Saved places | Tous les POI dans Google Maps |
+| **JSON Export** | JSON | Pour devs / intégrations custom |
+
+**Features export:**
+```typescript
+// Exemple: Export Google Calendar
+POST /api/trips/:id/export/calendar
+→ Crée événements avec:
+  - Titre: "Vol Paris → Barcelone"
+  - Heure: Départ/Arrivée
+  - Localisation: Coordonnées GPS
+  - Description: Infos de réservation
+  - Rappels: 24h avant, 2h avant
+
+// Exemple: Citymapper Integration
+GET /api/trips/:id/export/citymapper
+→ Génère deep link:
+  citymapper://directions?endcoord=41.4036,2.1744&endname=Sagrada%20Familia
+```
+
+**UI d'export (à ajouter dans trip detail):**
+```
+┌─────────────────────────────────────────────┐
+│ 📤 Exporter ton voyage                      │
+│                                             │
+│ 📅 [Ajouter à Google Calendar]              │
+│ 📱 [Ouvrir dans Citymapper]                 │
+│ 📄 [Télécharger PDF]                        │
+│ 🗺️ [Sauvegarder dans Google Maps]          │
+│ 📋 [Copier le lien de partage]              │
+└─────────────────────────────────────────────┘
+```
+
+#### 4. ✨ Interactions Ultra-Fluides
+
+**Principe**: Chaque interaction doit sembler instantanée et naturelle
+
+- **Streaming responses** - Tripy "tape" en temps réel
+- **Optimistic updates** - La carte se met à jour avant même la réponse complète
+- **Animations micro** - Feedback visuel à chaque action
+- **Pas de loading screens** - Skeleton loaders + progressive rendering
+- **Offline-first sur mobile** - Tout marche sans internet
+
+#### 5. 🎨 Visual Feedback Contextuel
+
+**Map + Chat parfaitement synchronisés:**
+- Quand Tripy mentionne un lieu → **marker pulse sur la map**
+- Quand l'utilisateur clique sur la map → **Tripy en parle dans le chat**
+- Route tracée en temps réel pendant que Tripy explique
+- Zoom automatique pour montrer tous les points
+
+**Suggestions intelligentes:**
+- Basées sur le contexte (budget, saison, préférences)
+- Badges visuels: "Populaire", "Bon plan", "Proche de toi"
+- Photos des destinations
+- Météo en temps réel
+
+#### 6. 🚀 Progressive Feature Discovery
+
+**Principe**: Ne pas submerger l'utilisateur
+
+- **V1 (Gratuit)**: Chat + Map + Export basique → Simplicité maximale
+- **V1.1 (Tripy+)**: Onboarding suggestions, Export avancé (Calendar, Citymapper)
+- **V1.2 (Tripy Pro)**: Collab, Offline, Journal, Smart notifications
+
+**Feature gates intelligents:**
+```
+Exemple: L'utilisateur a fini son 1er voyage
+→ Tripy: "Au fait, tu peux inviter des potes pour
+         planifier ensemble ! Envie d'essayer ?"
+→ Bouton [Découvrir le mode collaboratif]
+```
+
+---
+
+## 📊 MVP Features Priorities (Refined)
+
+### Must-Have V1.0 (Phase 2-3) - Core Experience
+1. ✅ Chat conversationnel avec Tripy
+2. ✅ Suggestions visuelles de démarrage (pictos types de voyage)
+3. ✅ Map interactive synchronisée
+4. ✅ Export PDF basique
+
+### Should-Have V1.1 (Phase 4-5) - Make it actionable
+5. 📅 Export Google/Apple Calendar avec GPS
+6. 🗺️ Deep link Citymapper pour navigation
+7. 💡 Suggestions de destinations populaires
+8. 🎯 Quick replies contextuelles
+
+### Nice-to-Have V1.2+ (Phase 6-7) - Premium differentiators
+9. 👥 Mode collaboratif + votes
+10. 📴 Mode offline
+11. 📔 Journal de bord
+12. 🔔 Smart notifications
 
 ---
 
