@@ -16,6 +16,15 @@ export default function AuthCallbackPage() {
       const code = searchParams.get("code");
       const next = searchParams.get("next") || "/dashboard";
 
+      // First check if we already have a session (might have been set by Supabase redirect)
+      const { data: { session: existingSession } } = await supabase.auth.getSession();
+
+      if (existingSession) {
+        console.log("[Auth Callback] Session already exists, redirecting...");
+        router.push(next);
+        return;
+      }
+
       if (!code) {
         setError("Code d'authentification manquant");
         return;
@@ -23,19 +32,37 @@ export default function AuthCallbackPage() {
 
       try {
         // Exchange the code for a session on the client side
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
         if (error) {
-          console.error("[Auth Callback] Error:", error);
+          console.error("[Auth Callback] Exchange error:", error.message);
+
+          // Check again if session exists despite the error (race condition)
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          if (retrySession) {
+            console.log("[Auth Callback] Session found on retry, redirecting...");
+            router.push(next);
+            return;
+          }
+
           setError(error.message);
           return;
         }
 
-        // Session is now stored in cookies by the browser client
-        console.log("[Auth Callback] Success! Redirecting to:", next);
-        router.push(next);
+        if (data.session) {
+          console.log("[Auth Callback] Success! Redirecting to:", next);
+          router.push(next);
+        }
       } catch (err) {
         console.error("[Auth Callback] Exception:", err);
+
+        // Final check for session
+        const { data: { session: finalSession } } = await supabase.auth.getSession();
+        if (finalSession) {
+          router.push(next);
+          return;
+        }
+
         setError("Une erreur inattendue s'est produite");
       }
     };

@@ -38,7 +38,11 @@
       "mcp__supabase__get_publishable_keys",
       "mcp__claude_ai_Context7__resolve-library-id",
       "mcp__supabase__search_docs",
-      "mcp__supabase__get_logs"
+      "mcp__supabase__get_logs",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(more:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
