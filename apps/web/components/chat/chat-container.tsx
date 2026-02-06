@@ -1,7 +1,7 @@
 "use client";
 
 import type { UIMessage } from "ai";
-import type { FormEvent, ChangeEvent } from "react";
+import type { FormEvent, ChangeEvent, ReactNode } from "react";
 import { ChatHeader } from "./chat-header";
 import { ChatMessages } from "./chat-messages";
 import { ChatInput } from "./chat-input";
@@ -14,6 +14,7 @@ type ChatContainerProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   isLoading?: boolean;
   onQuickReply?: (text: string) => void;
+  actionsSlot?: ReactNode;
   className?: string;
 };
 
@@ -24,6 +25,7 @@ export function ChatContainer({
   onSubmit,
   isLoading,
   onQuickReply,
+  actionsSlot,
   className,
 }: ChatContainerProps) {
   return (
@@ -34,6 +36,7 @@ export function ChatContainer({
         isLoading={isLoading}
         onQuickReply={onQuickReply}
       />
+      {actionsSlot}
       <ChatInput
         value={input}
         onChange={onInputChange}

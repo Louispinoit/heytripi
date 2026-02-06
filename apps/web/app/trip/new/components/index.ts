@@ -4,3 +4,8 @@ export { WalkingInfoBar } from "./walking-info-bar";
 export { ActivityDetailPanel } from "./activity-detail-panel";
 export { ActivityMarker } from "./activity-marker";
 export { AnimatedRoute } from "./animated-route";
+export { TripLoadingAnimation } from "./trip-loading-animation";
+export { QuickActionsBar } from "./quick-actions-bar";
+export { CitySlider } from "./city-slider";
+export { MapCityController } from "./map-city-controller";
+export { TripOverview } from "./trip-overview";

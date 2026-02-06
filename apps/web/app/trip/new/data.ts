@@ -11,9 +11,12 @@ import {
   ShoppingBag,
   PartyPopper,
   Bus,
+  Train,
+  Car,
+  Ship,
   type LucideIcon,
 } from "lucide-react";
-import type { ActivityCategory, LocationType } from "./types";
+import type { ActivityCategory, LocationType, TransportMode, QuickAction } from "./types";
 
 export const MARKER_COLORS: Record<LocationType, string> = {
   destination: "bg-primary",
@@ -92,4 +95,80 @@ export const ANIMATION_TIMING = {
   routeDrawDuration: 800,
   markerAppearDelay: 200,
   panelTransitionDuration: 300,
+};
+
+// --- Multi-city data ---
+
+export const TRANSPORT_ICONS: Record<TransportMode, LucideIcon> = {
+  plane: Plane,
+  train: Train,
+  car: Car,
+  bus: Bus,
+  ferry: Ship,
+};
+
+export const TRANSPORT_LABELS: Record<TransportMode, string> = {
+  plane: "Vol",
+  train: "Train",
+  car: "Voiture",
+  bus: "Bus",
+  ferry: "Ferry",
+};
+
+export const TRANSPORT_EMOJIS: Record<TransportMode, string> = {
+  plane: "✈️",
+  train: "🚂",
+  car: "🚗",
+  bus: "🚌",
+  ferry: "⛴️",
+};
+
+export const POST_GENERATION_QUICK_ACTIONS: QuickAction[] = [
+  {
+    id: "cheaper",
+    emoji: "💰",
+    label: "Moins cher",
+    prompt: "Propose-moi des alternatives moins chères pour ce voyage",
+  },
+  {
+    id: "no-flights",
+    emoji: "🚫",
+    label: "Sans vols",
+    prompt: "Refais l'itinéraire sans prendre l'avion",
+  },
+  {
+    id: "add-cities",
+    emoji: "🏙️",
+    label: "Ajouter villes",
+    prompt: "Ajoute une ville supplémentaire à cet itinéraire",
+  },
+  {
+    id: "restaurants",
+    emoji: "🍽️",
+    label: "Restaurants",
+    prompt: "Ajoute des recommandations de restaurants pour chaque ville",
+  },
+  {
+    id: "change-hotel",
+    emoji: "🏨",
+    label: "Changer hôtel",
+    prompt: "Propose-moi d'autres options d'hôtels",
+  },
+];
+
+export const LOADING_STEPS_CONFIG = [
+  { id: "init", label: "Analyse de ton voyage..." },
+  { id: "flights", label: "Recherche des vols..." },
+  { id: "hotels", label: "Sélection des hôtels..." },
+  { id: "activities", label: "Planification des activités..." },
+  { id: "optimize", label: "Optimisation de l'itinéraire..." },
+];
+
+export const MAP_CONFIG_COMPACT = {
+  defaultCenter: [2.3522, 48.8566] as [number, number],
+  defaultZoom: 4,
+  fitBoundsOptions: {
+    padding: { top: 40, bottom: 40, left: 40, right: 40 },
+    maxZoom: 14,
+  },
 };

@@ -11,7 +11,7 @@ import {
 } from "ai";
 import { z } from "zod";
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 const TRIPY_SYSTEM_PROMPT = `Tu es Tripy, l'assistant voyage intelligent de HeyTripy. Tu aides les utilisateurs à planifier leurs voyages de manière conversationnelle et amicale.
 
@@ -29,60 +29,49 @@ const TRIPY_SYSTEM_PROMPT = `Tu es Tripy, l'assistant voyage intelligent de HeyT
 - Proposer des itinéraires jour par jour
 - Aider à trouver des vols et hôtels adaptés
 
-## CRITIQUE - Utilisation des outils
+## CRITIQUE - Workflow de planification multi-villes
+
+### ÉTAPE 1 : initTrip (OBLIGATOIRE - toujours en premier)
+Quand l'utilisateur demande de planifier un voyage, tu DOIS d'abord appeler initTrip avec :
+- tripName: nom du voyage
+- originCity: ville de départ
+- cities: liste des villes à visiter (nom, lat, lng, dates, nombre de jours)
+- transports: mode de transport entre chaque ville
+
+Déclencheurs :
+- "Planifie-moi un voyage..."
+- "Road trip Italie Portugal"
+- "2 semaines à Barcelone et Madrid"
+- "Organise mon voyage"
+- Toute demande de planification multi-jours
+
+### ÉTAPE 2 : planCityOverview (pour CHAQUE ville)
+Après initTrip, appelle planCityOverview pour chaque ville avec :
+- cityId: identifiant unique (ex: "barcelona", "lisbon")
+- cityName: nom de la ville
+- description: 2-3 phrases sur la ville
+- imageUrls: 3 URLs d'images (utilise des URLs Unsplash avec le format https://images.unsplash.com/photo-XXXX?w=800)
+- flight: suggestion de vol (IATA codes, durée, prix)
+- hotel: suggestion d'hôtel (nom, étoiles, rating, prix)
+- logistics: conseils logistiques (transport local, etc.)
+
+### ÉTAPE 3 : planDayItinerary (pour CHAQUE jour de CHAQUE ville)
+Ensuite appelle planDayItinerary pour chaque jour avec les champs enrichis :
+- dayNumber, destination, activities (comme avant)
+- PLUS : dayTitle (titre poétique du jour), weatherEmoji, temperatureHigh, cityId
 
 ### RÈGLE ABSOLUE
-Quand on te demande de planifier des jours de voyage, tu DOIS utiliser l'outil planDayItinerary.
-NE PAS juste décrire les activités en texte - APPELLE L'OUTIL pour chaque jour.
-
-### planDayItinerary (OBLIGATOIRE pour les itinéraires)
-Déclencheurs :
-- "Planifie-moi X jours à [ville]"
-- "Que faire à [ville] ?"
-- "Organise mon voyage"
-- "Donne-moi un itinéraire"
-- Toute demande d'activités sur plusieurs jours
-
-Tu DOIS appeler planDayItinerary pour CHAQUE jour avec :
-- dayNumber: numéro du jour (1, 2, 3...)
-- destination: "Barcelone" (la ville)
-- activities: TABLEAU de 4-5 objets avec TOUTES les propriétés :
-  {
-    name: "Nom du lieu",
-    latitude: coordonnée (ex: 41.4036),
-    longitude: coordonnée (ex: 2.1744),
-    type: "activity",
-    description: "Description courte",
-    duration: durée en minutes (ex: 120),
-    startTime: "09:00",
-    price: prix en euros (ex: 26),
-    category: "CULTURE" | "NATURE" | "FOOD" | etc.
-  }
+Pour une planification complète : initTrip → planCityOverview × N → planDayItinerary × N
+NE PAS juste décrire en texte - APPELLE LES OUTILS dans l'ordre.
+Entre chaque étape, tu peux ajouter un court message pour informer l'utilisateur de ta progression.
 
 ### showOnMap (usage limité)
 UNIQUEMENT pour ajouter UN SEUL lieu quand l'utilisateur dit :
 - "Montre-moi [lieu]"
 - "Où est [lieu] ?"
 
-### Coordonnées GPS (OBLIGATOIRES)
-Barcelone :
-- Sagrada Familia: lat 41.4036, lng 2.1744
-- Park Güell: lat 41.4145, lng 2.1527
-- La Rambla: lat 41.3797, lng 2.1746
-- Casa Batlló: lat 41.3916, lng 2.1649
-- Barceloneta Beach: lat 41.3784, lng 2.1925
-- Camp Nou: lat 41.3809, lng 2.1228
-- Gothic Quarter: lat 41.3833, lng 2.1777
-- La Boqueria: lat 41.3816, lng 2.1718
-- Montjuïc: lat 41.3636, lng 2.1586
-- Picasso Museum: lat 41.3853, lng 2.1806
-
-Paris :
-- Tour Eiffel: lat 48.8584, lng 2.2945
-- Louvre: lat 48.8606, lng 2.3376
-- Notre-Dame: lat 48.8530, lng 2.3499
-- Montmartre: lat 48.8867, lng 2.3431
-- Champs-Élysées: lat 48.8698, lng 2.3078
+### Coordonnées GPS
+Utilise des coordonnées GPS précises pour toutes les villes et activités.
 
 ## Comment tu réponds
 - Pose des questions pour mieux comprendre les besoins
@@ -117,6 +106,101 @@ const activitySchema = z.object({
 });
 
 const tools = {
+  initTrip: tool({
+    description:
+      "Initialise un voyage multi-villes. TOUJOURS appeler en premier quand l'utilisateur demande de planifier un voyage.",
+    inputSchema: z.object({
+      tripName: z.string().describe("Nom du voyage (ex: Road trip Italie-Portugal)"),
+      originCity: z.string().describe("Ville de départ de l'utilisateur (ex: Paris)"),
+      cities: z
+        .array(
+          z.object({
+            id: z.string().describe("ID unique de la ville (ex: barcelona)"),
+            name: z.string().describe("Nom de la ville"),
+            latitude: z.number().describe("Latitude"),
+            longitude: z.number().describe("Longitude"),
+            startDate: z.string().optional().describe("Date de début (YYYY-MM-DD)"),
+            endDate: z.string().optional().describe("Date de fin (YYYY-MM-DD)"),
+            nights: z.number().describe("Nombre de nuits"),
+          })
+        )
+        .describe("Liste des villes à visiter dans l'ordre"),
+      transports: z
+        .array(
+          z.object({
+            mode: z.enum(["plane", "train", "car", "bus", "ferry"]).describe("Mode de transport"),
+            fromCity: z.string().describe("Ville de départ"),
+            toCity: z.string().describe("Ville d'arrivée"),
+            fromIATA: z.string().optional().describe("Code IATA départ"),
+            toIATA: z.string().optional().describe("Code IATA arrivée"),
+            duration: z.string().optional().describe("Durée du trajet (ex: 2h30)"),
+            price: z.number().optional().describe("Prix estimé en euros"),
+          })
+        )
+        .describe("Transports entre les villes"),
+      totalBudget: z.number().optional().describe("Budget total estimé en euros"),
+    }),
+    execute: async ({ tripName, originCity, cities, transports, totalBudget }) => {
+      return {
+        success: true,
+        message: `Voyage "${tripName}" initialisé : ${cities.length} villes au programme !`,
+        trip: { tripName, originCity, cities, transports, totalBudget },
+      };
+    },
+  }),
+  planCityOverview: tool({
+    description:
+      "Planifie l'aperçu d'une ville : description, vol, hôtel, logistique. Appeler après initTrip pour chaque ville.",
+    inputSchema: z.object({
+      cityId: z.string().describe("ID de la ville (doit correspondre à l'ID dans initTrip)"),
+      cityName: z.string().describe("Nom de la ville"),
+      description: z.string().describe("Description de la ville (2-3 phrases)"),
+      imageUrls: z
+        .array(z.string())
+        .describe("3 URLs d'images de la ville (Unsplash)"),
+      flight: z
+        .object({
+          fromIATA: z.string().describe("Code IATA départ"),
+          toIATA: z.string().describe("Code IATA arrivée"),
+          duration: z.string().describe("Durée du vol (ex: 2h15)"),
+          stops: z.number().describe("Nombre d'escales (0 = direct)"),
+          price: z.number().describe("Prix en euros"),
+          airline: z.string().optional().describe("Compagnie aérienne"),
+        })
+        .optional()
+        .describe("Suggestion de vol (si pertinent)"),
+      hotel: z
+        .object({
+          name: z.string().describe("Nom de l'hôtel"),
+          stars: z.number().describe("Nombre d'étoiles (1-5)"),
+          rating: z.number().describe("Note (ex: 8.7)"),
+          reviews: z.number().describe("Nombre d'avis"),
+          imageUrl: z.string().optional().describe("URL image hôtel"),
+          pricePerNight: z.number().describe("Prix par nuit en euros"),
+          aiReason: z.string().optional().describe("Pourquoi Tripy recommande cet hôtel"),
+        })
+        .optional()
+        .describe("Suggestion d'hôtel"),
+      logistics: z
+        .array(
+          z.object({
+            type: z.string().describe("Type (ex: Metro, Bus, Taxi)"),
+            description: z.string().describe("Description du conseil"),
+            price: z.number().optional().describe("Prix estimé"),
+            duration: z.string().optional().describe("Durée"),
+          })
+        )
+        .optional()
+        .describe("Conseils logistiques"),
+    }),
+    execute: async ({ cityId, cityName, description, imageUrls, flight, hotel, logistics }) => {
+      return {
+        success: true,
+        message: `Aperçu de ${cityName} planifié`,
+        cityOverview: { cityId, cityName, description, imageUrls, flight, hotel, logistics },
+      };
+    },
+  }),
   showOnMap: tool({
     description:
       "Affiche un lieu sur la carte. Utilise cet outil chaque fois qu'une destination, ville, ou point d'intérêt est mentionné.",
@@ -147,17 +231,21 @@ const tools = {
   }),
   planDayItinerary: tool({
     description:
-      "Planifie un itinéraire complet pour un jour donné avec plusieurs activités. Utilise cet outil quand l'utilisateur demande de planifier un jour ou plusieurs jours.",
+      "Planifie un itinéraire complet pour un jour donné avec plusieurs activités. Utilise cet outil pour chaque jour de chaque ville.",
     inputSchema: z.object({
       dayNumber: z.number().describe("Numéro du jour (1, 2, 3...)"),
       destination: z.string().describe("Nom de la ville/destination"),
+      dayTitle: z.string().optional().describe("Titre poétique du jour (ex: Balade dans le Barri Gòtic)"),
+      weatherEmoji: z.string().optional().describe("Emoji météo (ex: ☀️, 🌤️, 🌧️)"),
+      temperatureHigh: z.number().optional().describe("Température max prévue en °C"),
+      cityId: z.string().optional().describe("ID de la ville (correspondant à initTrip)"),
       activities: z.array(activitySchema).describe("Liste des activités du jour, ordonnées chronologiquement"),
     }),
-    execute: async ({ dayNumber, destination, activities }) => {
+    execute: async ({ dayNumber, destination, dayTitle, weatherEmoji, temperatureHigh, cityId, activities }) => {
       return {
         success: true,
         message: `Jour ${dayNumber} à ${destination} planifié avec ${activities.length} activités`,
-        day: { dayNumber, destination, activities },
+        day: { dayNumber, destination, dayTitle, weatherEmoji, temperatureHigh, cityId, activities },
       };
     },
   }),
@@ -193,11 +281,11 @@ export async function POST(req: Request) {
   const { messages }: { messages: ChatMessage[] } = await req.json();
 
   const result = streamText({
-    model: groq("llama-3.3-70b-versatile"),
+    model: groq("moonshotai/kimi-k2-instruct-0905"),
     system: TRIPY_SYSTEM_PROMPT,
     messages: await convertToModelMessages(messages),
     tools,
-    stopWhen: stepCountIs(10),
+    stopWhen: stepCountIs(15),
   });
 
   return result.toUIMessageStreamResponse();

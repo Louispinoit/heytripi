@@ -3,15 +3,18 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { ArrowLeft } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { ArrowLeft, Map as MapIcon, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import MapLibreGL from "maplibre-gl";
 import { ChatContainer } from "@/components/chat";
 import { Map as MapComponent, MapControls, useMap } from "@/components/ui/map";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { DayActivity, WalkingSegment, Itinerary } from "./types";
-import { MAP_CONFIG } from "./data";
+import { MAP_CONFIG, MAP_CONFIG_COMPACT, POST_GENERATION_QUICK_ACTIONS } from "./data";
 import { fetchWalkingRoute, calculateTotalWalking } from "./lib/walking-routes";
+import { useItineraryBuilder } from "./lib/use-itinerary-builder";
 import {
   DayNavigator,
   TripMapHeader,
@@ -19,9 +22,14 @@ import {
   ActivityDetailPanel,
   ActivityMarker,
   AnimatedRoute,
+  TripLoadingAnimation,
+  QuickActionsBar,
+  CitySlider,
+  MapCityController,
+  TripOverview,
 } from "./components";
 
-// Map zoom controller component
+// Map zoom controller for legacy single-day view
 function MapZoomController({
   activities,
   selectedActivityId,
@@ -34,7 +42,6 @@ function MapZoomController({
   useEffect(() => {
     if (!map || !isLoaded || activities.length === 0) return;
 
-    // If an activity is selected, zoom to it
     if (selectedActivityId) {
       const activity = activities.find((a) => a.id === selectedActivityId);
       if (activity) {
@@ -47,7 +54,6 @@ function MapZoomController({
       }
     }
 
-    // Otherwise fit all activities
     if (activities.length === 1) {
       const activity = activities[0]!;
       map.flyTo({
@@ -78,6 +84,7 @@ export default function NewTripPage() {
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null);
   const [walkingSegments, setWalkingSegments] = useState<Map<string, WalkingSegment>>(new Map());
+  const [mobileTab, setMobileTab] = useState<"chat" | "trip">("chat");
   const fetchedSegmentsRef = useRef<Set<string>>(new Set());
   const lastProcessedMessagesLengthRef = useRef(0);
 
@@ -89,7 +96,25 @@ export default function NewTripPage() {
 
   const isLoading = status === "streaming" || status === "submitted";
 
-  // Get current day's activities
+  // Multi-city itinerary builder
+  const {
+    multiCityItinerary,
+    activeCityId,
+    setActiveCityId,
+    tripPhase,
+    loadingSteps,
+  } = useItineraryBuilder(messages, status);
+
+  const hasTrip = tripPhase === "viewing" && multiCityItinerary;
+
+  // Get all activities for the active city (for map markers)
+  const activeCityActivities = useMemo(() => {
+    if (!multiCityItinerary || !activeCityId) return [];
+    const city = multiCityItinerary.cities.find((c) => c.id === activeCityId);
+    return city?.days.flatMap((d) => d.activities) || [];
+  }, [multiCityItinerary, activeCityId]);
+
+  // Legacy: Get current day's activities
   const currentDay = itinerary.days[currentDayIndex];
   const currentActivities = useMemo(
     () => currentDay?.activities || [],
@@ -138,12 +163,9 @@ export default function NewTripPage() {
     fetchRoutes();
   }, [currentActivities]);
 
-  // Extract itinerary from tool invocations in messages
+  // Legacy: Extract itinerary from tool invocations
   useEffect(() => {
-    // Skip if no new messages
-    if (messages.length === lastProcessedMessagesLengthRef.current) {
-      return;
-    }
+    if (messages.length === lastProcessedMessagesLengthRef.current) return;
     lastProcessedMessagesLengthRef.current = messages.length;
 
     let newDestination = "";
@@ -152,7 +174,6 @@ export default function NewTripPage() {
 
     messages.forEach((message) => {
       message.parts.forEach((part) => {
-        // Handle tool invocations - AI SDK format: type is "tool-{toolName}"
         const toolPart = part as {
           type: string;
           toolName?: string;
@@ -160,13 +181,11 @@ export default function NewTripPage() {
           output?: unknown;
         };
 
-        // Check for tool parts with output-available state
         const isToolWithOutput =
           toolPart.type?.startsWith("tool-") &&
           toolPart.state === "output-available";
 
         if (isToolWithOutput) {
-          // Get toolName from the type string (e.g., "tool-planDayItinerary" -> "planDayItinerary")
           const toolName = toolPart.type.replace("tool-", "");
           const result = toolPart.output as Record<string, unknown> | undefined;
 
@@ -191,7 +210,6 @@ export default function NewTripPage() {
 
             const dayActivities = newDays.get(dayNumber)!;
 
-            // Avoid duplicates
             if (!dayActivities.find((a) => a.name === loc.name)) {
               activityCounter++;
               dayActivities.push({
@@ -208,7 +226,6 @@ export default function NewTripPage() {
               });
             }
 
-            // Set destination from first location
             if (loc.type === "destination" && !newDestination) {
               newDestination = loc.name;
             }
@@ -255,7 +272,6 @@ export default function NewTripPage() {
       });
     });
 
-    // Only update state if we found itinerary data
     if (newDays.size > 0) {
       const sortedDays = Array.from(newDays.entries())
         .sort((a, b) => a[0] - b[0])
@@ -269,7 +285,6 @@ export default function NewTripPage() {
         days: sortedDays,
       });
 
-      // Auto-select the last day
       setCurrentDayIndex(sortedDays.length - 1);
     }
   }, [messages]);
@@ -335,6 +350,9 @@ export default function NewTripPage() {
     ? walkingSegments.get(`${selectedActivity.id}-${nextActivity.id}`)
     : undefined;
 
+  // Which map config to use based on phase
+  const mapConfig = hasTrip ? MAP_CONFIG_COMPACT : MAP_CONFIG;
+
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Top bar - mobile only */}
@@ -344,13 +362,42 @@ export default function NewTripPage() {
             <ArrowLeft className="size-5" />
           </Link>
         </Button>
-        <h1 className="font-semibold">Nouveau voyage</h1>
+        <h1 className="flex-1 font-semibold">Nouveau voyage</h1>
+
+        {/* Mobile tab switcher */}
+        {hasTrip && (
+          <div className="flex gap-1 rounded-lg bg-muted p-0.5">
+            <Button
+              variant={mobileTab === "chat" ? "default" : "ghost"}
+              size="sm"
+              className="h-7 gap-1.5 px-2.5 text-xs"
+              onClick={() => setMobileTab("chat")}
+            >
+              <MessageSquare className="size-3.5" />
+              Chat
+            </Button>
+            <Button
+              variant={mobileTab === "trip" ? "default" : "ghost"}
+              size="sm"
+              className="h-7 gap-1.5 px-2.5 text-xs"
+              onClick={() => setMobileTab("trip")}
+            >
+              <MapIcon className="size-3.5" />
+              Voyage
+            </Button>
+          </div>
+        )}
       </header>
 
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat panel */}
-        <div className="flex w-full flex-col border-r lg:w-[450px] xl:w-[500px]">
+        <div
+          className={cn(
+            "flex flex-col border-r lg:w-[450px] xl:w-[500px]",
+            hasTrip && mobileTab !== "chat" ? "hidden lg:flex" : "w-full lg:w-[450px] xl:w-[500px]"
+          )}
+        >
           {/* Back button - desktop only */}
           <div className="hidden shrink-0 items-center gap-2 border-b px-4 py-2 lg:flex">
             <Button variant="ghost" size="sm" className="gap-2" asChild>
@@ -367,89 +414,216 @@ export default function NewTripPage() {
             onSubmit={handleSubmit}
             isLoading={isLoading}
             onQuickReply={handleQuickReply}
+            actionsSlot={
+              tripPhase === "viewing" ? (
+                <QuickActionsBar
+                  actions={POST_GENERATION_QUICK_ACTIONS}
+                  onAction={handleQuickReply}
+                />
+              ) : undefined
+            }
             className="flex-1"
           />
         </div>
 
-        {/* Map panel - hidden on mobile */}
-        <div className="hidden flex-1 flex-col lg:flex">
-          {/* Map header */}
-          <TripMapHeader
-            destination={itinerary.destination}
-            currentDay={currentDay?.dayNumber || 1}
-            activityCount={currentActivities.length}
-            totalWalkingMinutes={totalWalkingMinutes}
-          />
-
-          {/* Day navigator */}
-          {itinerary.days.length > 0 && (
-            <DayNavigator
-              totalDays={itinerary.days.length}
-              currentDay={currentDay?.dayNumber || 1}
-              onDayChange={handleDayChange}
-            />
+        {/* Right panel - Map + Trip Overview */}
+        <div
+          className={cn(
+            "flex-1 flex-col",
+            hasTrip && mobileTab === "trip" ? "flex" : "hidden lg:flex"
           )}
-
-          {/* Walking info bar */}
-          {currentActivities.length > 1 && (
-            <WalkingInfoBar
-              activities={currentActivities}
-              walkingSegments={walkingSegments}
-              onActivityClick={handleActivityClick}
-            />
-          )}
-
-          {/* Map */}
-          <div className="relative flex-1">
-            <MapComponent
-              center={MAP_CONFIG.defaultCenter}
-              zoom={MAP_CONFIG.defaultZoom}
-            >
-              <MapZoomController
-                activities={currentActivities}
-                selectedActivityId={selectedActivityId}
+        >
+          {/* === CHATTING phase: full-height map === */}
+          {tripPhase === "chatting" && (
+            <div className="flex flex-1 flex-col">
+              <TripMapHeader
+                destination={itinerary.destination}
+                currentDay={currentDay?.dayNumber || 1}
+                activityCount={currentActivities.length}
+                totalWalkingMinutes={totalWalkingMinutes}
               />
 
-              <MapControls showZoom showLocate />
-
-              {/* Render walking routes */}
-              {currentActivities.slice(0, -1).map((activity, index) => {
-                const nextAct = currentActivities[index + 1];
-                if (!nextAct) return null;
-                const segmentKey = `${activity.id}-${nextAct.id}`;
-                const segment = walkingSegments.get(segmentKey);
-                if (!segment) return null;
-                return (
-                  <AnimatedRoute
-                    key={segmentKey}
-                    coordinates={segment.coordinates}
-                    delay={index * 100}
-                  />
-                );
-              })}
-
-              {/* Render activity markers */}
-              {currentActivities.map((activity, index) => (
-                <ActivityMarker
-                  key={activity.id}
-                  activity={activity}
-                  index={index}
-                  isSelected={selectedActivityId === activity.id}
-                  onClick={() => handleActivityClick(activity.id)}
+              {itinerary.days.length > 0 && (
+                <DayNavigator
+                  totalDays={itinerary.days.length}
+                  currentDay={currentDay?.dayNumber || 1}
+                  onDayChange={handleDayChange}
                 />
-              ))}
-            </MapComponent>
+              )}
 
-            {/* Activity detail panel */}
-            <ActivityDetailPanel
-              activity={selectedActivity}
-              index={selectedIndex}
-              nextWalkingSegment={nextWalkingSegment}
-              nextActivity={nextActivity}
-              onClose={() => setSelectedActivityId(null)}
-              onNextActivity={handleNextActivity}
-            />
-          </div>
+              {currentActivities.length > 1 && (
+                <WalkingInfoBar
+                  activities={currentActivities}
+                  walkingSegments={walkingSegments}
+                  onActivityClick={handleActivityClick}
+                />
+              )}
+
+              <div className="relative flex-1">
+                <MapComponent
+                  center={MAP_CONFIG.defaultCenter}
+                  zoom={MAP_CONFIG.defaultZoom}
+                >
+                  <MapZoomController
+                    activities={currentActivities}
+                    selectedActivityId={selectedActivityId}
+                  />
+                  <MapControls showZoom showLocate />
+
+                  {currentActivities.slice(0, -1).map((activity, index) => {
+                    const nextAct = currentActivities[index + 1];
+                    if (!nextAct) return null;
+                    const segmentKey = `${activity.id}-${nextAct.id}`;
+                    const segment = walkingSegments.get(segmentKey);
+                    if (!segment) return null;
+                    return (
+                      <AnimatedRoute
+                        key={segmentKey}
+                        coordinates={segment.coordinates}
+                        delay={index * 100}
+                      />
+                    );
+                  })}
+
+                  {currentActivities.map((activity, index) => (
+                    <ActivityMarker
+                      key={activity.id}
+                      activity={activity}
+                      index={index}
+                      isSelected={selectedActivityId === activity.id}
+                      onClick={() => handleActivityClick(activity.id)}
+                    />
+                  ))}
+                </MapComponent>
+
+                <ActivityDetailPanel
+                  activity={selectedActivity}
+                  index={selectedIndex}
+                  nextWalkingSegment={nextWalkingSegment}
+                  nextActivity={nextActivity}
+                  onClose={() => setSelectedActivityId(null)}
+                  onNextActivity={handleNextActivity}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* === BUILDING phase: map + loading overlay === */}
+          {tripPhase === "building" && (
+            <div className="relative flex flex-1 flex-col">
+              <div className="flex-1">
+                <MapComponent
+                  center={mapConfig.defaultCenter}
+                  zoom={mapConfig.defaultZoom}
+                >
+                  <MapCityController
+                    itinerary={multiCityItinerary}
+                    activeCityId={activeCityId}
+                  />
+                  <MapControls showZoom showLocate />
+
+                  {/* Show city markers during build */}
+                  {multiCityItinerary?.cities.map((city) => (
+                    <ActivityMarker
+                      key={city.id}
+                      activity={{
+                        id: city.id,
+                        name: city.cityName,
+                        latitude: city.latitude,
+                        longitude: city.longitude,
+                        type: "destination",
+                      }}
+                      index={0}
+                      isSelected={activeCityId === city.id}
+                      onClick={() => setActiveCityId(city.id)}
+                    />
+                  ))}
+                </MapComponent>
+              </div>
+
+              <AnimatePresence>
+                <TripLoadingAnimation steps={loadingSteps} />
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* === VIEWING phase: Map (40%) + CitySlider + TripOverview (60%) === */}
+          {tripPhase === "viewing" && multiCityItinerary && (
+            <div className="flex flex-1 flex-col">
+              {/* Map section - 40% height */}
+              <div className="relative h-[40%] shrink-0 border-b">
+                <MapComponent
+                  center={mapConfig.defaultCenter}
+                  zoom={mapConfig.defaultZoom}
+                >
+                  <MapCityController
+                    itinerary={multiCityItinerary}
+                    activeCityId={activeCityId}
+                    selectedActivityId={selectedActivityId}
+                  />
+                  <MapControls showZoom showLocate />
+
+                  {/* City markers */}
+                  {multiCityItinerary.cities.map((city) => (
+                    <ActivityMarker
+                      key={`city-${city.id}`}
+                      activity={{
+                        id: city.id,
+                        name: city.cityName,
+                        latitude: city.latitude,
+                        longitude: city.longitude,
+                        type: "destination",
+                      }}
+                      index={0}
+                      isSelected={activeCityId === city.id}
+                      onClick={() => setActiveCityId(city.id)}
+                    />
+                  ))}
+
+                  {/* Activity markers for active city */}
+                  {activeCityActivities.map((activity, index) => (
+                    <ActivityMarker
+                      key={activity.id}
+                      activity={activity}
+                      index={index}
+                      isSelected={selectedActivityId === activity.id}
+                      onClick={() => handleActivityClick(activity.id)}
+                    />
+                  ))}
+                </MapComponent>
+
+                <ActivityDetailPanel
+                  activity={
+                    selectedActivityId
+                      ? activeCityActivities.find((a) => a.id === selectedActivityId) || null
+                      : null
+                  }
+                  index={
+                    selectedActivityId
+                      ? activeCityActivities.findIndex((a) => a.id === selectedActivityId)
+                      : -1
+                  }
+                  onClose={() => setSelectedActivityId(null)}
+                />
+              </div>
+
+              {/* City slider */}
+              <CitySlider
+                itinerary={multiCityItinerary}
+                activeCityId={activeCityId}
+                onCitySelect={setActiveCityId}
+              />
+
+              {/* Trip overview - 60% height */}
+              <div className="flex-1 overflow-hidden">
+                <TripOverview
+                  itinerary={multiCityItinerary}
+                  activeCityId={activeCityId}
+                  onActivityClick={handleActivityClick}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

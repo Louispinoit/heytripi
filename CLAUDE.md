@@ -77,6 +77,7 @@ import { Button } from "@repo/ui/button";
 ### Key Domain Types
 
 Core types in `packages/shared/src/types/trip.ts`:
+
 - `Trip` - destination, dates, budget, status, flights, hotels, activities
 - `TripStatus`: PLANNING | READY | ONGOING | COMPLETED | CANCELLED
 - `ItemStatus`: SUGGESTED | ACCEPTED | REJECTED | BOOKED
@@ -84,15 +85,15 @@ Core types in `packages/shared/src/types/trip.ts`:
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Web | Next.js 16 + React 19 + Tailwind CSS 4 |
-| UI Components | **shadcn/ui** (style: new-york) |
-| Mobile | Expo 54 + React Native 0.81 + Expo Router |
-| Monorepo | Turborepo 2.7 + **pnpm 9** |
-| Data | TanStack React Query + Zod validation |
+| Layer             | Technology                                                   |
+| ----------------- | ------------------------------------------------------------ |
+| Web               | Next.js 16 + React 19 + Tailwind CSS 4                       |
+| UI Components     | **shadcn/ui** (style: new-york)                              |
+| Mobile            | Expo 54 + React Native 0.81 + Expo Router                    |
+| Monorepo          | Turborepo 2.7 + **pnpm 9**                                   |
+| Data              | TanStack React Query + Zod validation                        |
 | Backend (planned) | Next.js API Routes + Supabase (PostgreSQL + Auth + Realtime) |
-| AI | Claude Sonnet 4 via Vercel AI SDK |
+| AI                | Claude Sonnet 4 via Vercel AI SDK                            |
 
 ### UI Components (shadcn/ui)
 
@@ -110,29 +111,32 @@ Components are installed in `apps/web/components/ui/`. Use Context7 MCP to get l
 
 ### External APIs
 
-| API | Purpose | Auth |
-|-----|---------|------|
-| Amadeus | Flights & Hotels search | API Key + Secret |
-| Booking.com | Hotel affiliate | Affiliate ID + Token |
-| GetYourGuide | Activities affiliate | API Key |
-| Google Places | POI, autocomplete | API Key |
-| RestCountries | Country tips (free) | None |
+| API           | Purpose                 | Auth                 |
+| ------------- | ----------------------- | -------------------- |
+| Amadeus       | Flights & Hotels search | API Key + Secret     |
+| Booking.com   | Hotel affiliate         | Affiliate ID + Token |
+| GetYourGuide  | Activities affiliate    | API Key              |
+| Google Places | POI, autocomplete       | API Key              |
+| RestCountries | Country tips (free)     | None                 |
 
 ## Security Requirements
 
 ### Authentication & Authorization
+
 - Use Supabase Auth for all user authentication
 - Implement proper session management with secure cookies (HttpOnly, Secure, SameSite=Strict)
 - Validate JWT tokens on every API request
 - Implement role-based access control (owner, editor, viewer) for collaborative trips
 
 ### API Security
+
 - **Rate limiting**: Implement via Upstash Redis on all API routes
 - **Input validation**: Use Zod schemas for ALL user inputs before processing
 - **API keys**: Store in environment variables, never commit to git
 - **CORS**: Configure strict origins in production
 
 ### Data Protection
+
 - Sanitize all user inputs to prevent XSS
 - Use parameterized queries (Prisma handles this) to prevent SQL injection
 - Encrypt sensitive data at rest (user preferences, payment info)
@@ -141,6 +145,7 @@ Components are installed in `apps/web/components/ui/`. Use Context7 MCP to get l
 ### Environment Variables
 
 Required `.env` structure:
+
 ```env
 # Database
 DATABASE_URL=
@@ -169,6 +174,7 @@ UPSTASH_REDIS_TOKEN=
 **NEVER commit .env files. Use .env.example for documentation.**
 
 ### Content Security
+
 - Implement CSP headers in Next.js config
 - Validate and sanitize URLs before redirects
 - Use HTTPS everywhere in production
@@ -177,12 +183,14 @@ UPSTASH_REDIS_TOKEN=
 ## Best Practices
 
 ### Code Quality
+
 - TypeScript strict mode enabled across all packages
 - ESLint with strict rules (--max-warnings 0)
 - Prettier for consistent formatting
 - Use `"use client"` directive only when necessary in React components
 
 ### React & Next.js
+
 - Prefer Server Components by default
 - Use App Router patterns (layout.tsx, page.tsx, loading.tsx, error.tsx)
 - Implement proper error boundaries
@@ -190,23 +198,27 @@ UPSTASH_REDIS_TOKEN=
 - Leverage React 19 features (use hook, server actions)
 
 ### API Design
+
 - RESTful endpoints under `/api/`
 - Consistent error response format: `{ error: string, code: string }`
 - Use proper HTTP status codes
 - Implement request/response logging for debugging
 
 ### Mobile (Expo)
+
 - Use Expo Router for navigation
 - Implement proper offline support with SQLite
 - Handle deep linking
 - Use platform-specific files (.ios.ts, .android.ts, .web.ts) when needed
 
 ### State Management
+
 - TanStack Query for server state
 - React Context for global UI state
 - Avoid prop drilling with proper component composition
 
 ### Performance
+
 - Implement proper caching strategies (Redis for API, React Query for client)
 - Use Turborepo caching for builds
 - Lazy load components and routes
@@ -215,6 +227,7 @@ UPSTASH_REDIS_TOKEN=
 ## Code Structure & File Organization
 
 ### File Naming Conventions
+
 - **kebab-case** for all files: `demo-preview.tsx`, `feature-card.tsx`
 - **SCREAMING_SNAKE_CASE** for constants: `FEATURES`, `PRICING_PLANS`
 - **PascalCase** for components/types: `DemoPreview`, `FeatureCard`
@@ -223,11 +236,13 @@ UPSTASH_REDIS_TOKEN=
 ### Component Organization
 
 **Simple components** (single file):
+
 ```
 components/landing/feature-card.tsx
 ```
 
 **Complex components** (folder with multiple files):
+
 ```
 components/landing/demo-preview/
 ├── index.tsx          # Main component + sub-components
@@ -238,7 +253,9 @@ components/landing/demo-preview/
 ```
 
 ### Barrel Exports
+
 Always create `index.ts` for folders with multiple exports:
+
 ```typescript
 // components/landing/index.ts
 export { AnimatedSection, AnimatedText } from "./animated-section";
@@ -248,6 +265,7 @@ export { FeatureCard } from "./feature-card";
 ```
 
 ### Data Separation
+
 **ALWAYS** separate data from components:
 
 ```typescript
@@ -263,6 +281,7 @@ import { FEATURES } from "./data";
 ```
 
 ### Page Structure
+
 Keep pages clean - only layout, use imported components:
 
 ```typescript
@@ -283,6 +302,7 @@ export default function Home() {
 Section components can stay in the page file if they're page-specific, but data must be extracted.
 
 ### Web App Structure
+
 ```
 apps/web/
 ├── app/                      # Next.js App Router
@@ -314,6 +334,7 @@ apps/web/
 ```
 
 ### Rules
+
 1. **Max 300 lines per file** - Split if larger
 2. **No inline data in components** - Extract to `data.ts`
 3. **One component per file** (unless tightly coupled)
@@ -335,19 +356,32 @@ const travelTools = {
       departureDate: z.string(),
       returnDate: z.string().optional(),
       passengers: z.number().default(1),
-      maxPrice: z.number().optional()
+      maxPrice: z.number().optional(),
     }),
-    execute: async (params) => { /* Amadeus API call */ }
+    execute: async (params) => {
+      /* Amadeus API call */
+    },
   },
-  searchHotels: { /* Booking.com API */ },
-  searchActivities: { /* GetYourGuide API */ },
-  getCountryTips: { /* RestCountries API */ },
-  updateTrip: { /* Database update */ },
-  calculateBudget: { /* Budget calculation */ }
+  searchHotels: {
+    /* Booking.com API */
+  },
+  searchActivities: {
+    /* GetYourGuide API */
+  },
+  getCountryTips: {
+    /* RestCountries API */
+  },
+  updateTrip: {
+    /* Database update */
+  },
+  calculateBudget: {
+    /* Budget calculation */
+  },
 };
 ```
 
 ### Cost Optimization
+
 - Use prompt caching for system prompts (90% reduction)
 - Route simple queries to Claude Haiku ($0.80/1M)
 - Route complex planning to Claude Sonnet 4 ($3/1M)
@@ -357,20 +391,23 @@ const travelTools = {
 ## Brand Guidelines
 
 ### Colors (Tailwind)
+
 ```css
---tripi-500: #14B8A6;  /* Primary - Tripy Teal */
---sunset-500: #F97316; /* Accent - CTA */
---sky-500: #0EA5E9;    /* Secondary - Sky Blue */
---cloud: #F8FAFC;      /* Light background */
---night: #0F172A;      /* Dark text/background */
+--tripi-500: #14b8a6; /* Primary - Tripy Teal */
+--sunset-500: #f97316; /* Accent - CTA */
+--sky-500: #0ea5e9; /* Secondary - Sky Blue */
+--cloud: #f8fafc; /* Light background */
+--night: #0f172a; /* Dark text/background */
 ```
 
 ### Typography
+
 - Headings: Plus Jakarta Sans (600-800)
 - Body: Inter (400-600)
 - Mono: JetBrains Mono
 
 ### Tone of Voice
+
 - Use "tu" (informal French)
 - Friendly, enthusiastic, expert but accessible
 - Concise messages, avoid jargon
@@ -378,6 +415,7 @@ const travelTools = {
 - Never negative ("impossible") - always offer alternatives
 
 ### Examples
+
 ```
 ✅ "Super choix ! Barcelone va te plaire"
 ❌ "Votre destination a été enregistrée."
@@ -408,3 +446,54 @@ const travelTools = {
 - **Database**: Supabase (managed PostgreSQL)
 - **Staging**: Deploy from develop branch
 - **Production**: Deploy from main branch with manual approval
+
+# MCP Gemini Design - MANDATORY FOR FRONTEND
+
+## ABSOLUTE RULE - NEVER IGNORE
+
+You MUST NEVER write frontend/UI code yourself.
+
+Gemini is your frontend developer. You are NOT allowed to create visual components, pages, or interfaces without going through Gemini. This is NON-NEGOTIABLE.
+
+### When to use Gemini? ALWAYS for:
+
+Creating a page (dashboard, landing, settings, etc.)
+Creating a visual component (card, modal, sidebar, form, button, etc.)
+Modifying the design of an existing element
+Anything related to styling/layout
+
+### Exceptions (you can do it yourself):
+
+Modifying text/copy
+Adding JS logic without changing the UI
+Non-visual bug fixes
+Data wiring (useQuery, useMutation, etc.)
+
+## MANDATORY Workflow
+
+1. New project: generate_vibes → user chooses → create_frontend with generateDesignSystem: true
+
+2. Save design system: Save designSystem to design-system.md at project root
+
+3. Subsequent pages: Pass projectRoot to auto-load design system
+
+4. Existing project: Pass CSS/theme files in context
+
+## Design System Feature
+
+Set generateDesignSystem: true for the FIRST page. Gemini returns code + design system. Save to design-system.md. For subsequent calls, pass projectRoot for consistent styling.
+
+## WHAT IS FORBIDDEN
+
+Writing a React component with styling without Gemini
+Creating a page without Gemini
+"Reusing existing styles" as an excuse to not use Gemini
+Doing frontend "quickly" yourself
+
+## WHAT IS EXPECTED
+
+Call Gemini BEFORE writing any frontend code
+Ask user for vibe choice if new project
+Use generateDesignSystem: true for FIRST page, save design-system.md
+Pass projectRoot for subsequent calls
+Let Gemini design, you implement
